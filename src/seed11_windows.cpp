@@ -35,6 +35,11 @@ namespace seed11
 				CryptReleaseContext(crypt_provider, 0);
 			}
 		};
+
+		void* seed_device_init(const std::string& token)
+		{
+			return new detail::seed_impl();
+		}
 	}
 
 	void seed_device::seed_impl_deleter::operator()(void* ptr)
@@ -43,9 +48,15 @@ namespace seed11
 	}
 
 	seed_device::seed_device() : 
-		impl(new detail::seed_impl())
+		impl(detail::seed_device_init(""))
 	{
 		
+	}
+
+	seed_device::seed_device(const std::string& token) :
+		impl(detail::seed_device_init(token))
+	{
+
 	}
 
 	seed_device::result_type seed_device::operator()()

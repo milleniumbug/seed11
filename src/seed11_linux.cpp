@@ -5,6 +5,13 @@
 
 namespace seed11
 {
+	namespace detail
+	{
+		void* seed_device_init(const std::string& token)
+		{
+			return std::fopen("/dev/urandom", "rb");
+		}
+	}
 
 	void seed_device::seed_impl_deleter::operator()(void* ptr)
 	{
@@ -12,7 +19,13 @@ namespace seed11
 	}
 
 	seed_device::seed_device() :
-		impl(std::fopen("/dev/urandom", "rb"))
+		impl(detail::seed_device_init(""))
+	{
+		
+	}
+
+	seed_device::seed_device(const std::string& token) :
+		impl(detail::seed_device_init(token))
 	{
 
 	}

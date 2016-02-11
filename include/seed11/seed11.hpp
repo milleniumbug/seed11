@@ -1,5 +1,6 @@
 #include <climits>
 #include <memory>
+#include <string>
 
 namespace seed11
 {
@@ -32,6 +33,7 @@ namespace seed11
 		result_type operator()();
 
 		seed_device();
+		explicit seed_device(const std::string& token);
 		seed_device(const seed_device&) = delete;
 		seed_device(seed_device&&) = delete;
 		seed_device& operator=(const seed_device&) = delete;
