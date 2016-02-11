@@ -27,7 +27,7 @@ namespace seed11
 					CRYPT_VERIFYCONTEXT))
 					return;
 
-				throw "FUCK";
+				throw seed_device_init_error("FUCK");
 			}
 
 			~seed_impl()
@@ -40,6 +40,17 @@ namespace seed11
 		{
 			return new detail::seed_impl();
 		}
+	}
+
+	seed_device_init_error::seed_device_init_error(const std::string& what_arg) :
+		std::runtime_error(what_arg)
+	{
+
+	}
+	seed_device_init_error::seed_device_init_error(const char* what_arg) :
+		std::runtime_error(what_arg)
+	{
+
 	}
 
 	void seed_device::seed_impl_deleter::operator()(void* ptr)

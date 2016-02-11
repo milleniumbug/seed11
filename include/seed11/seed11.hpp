@@ -8,6 +8,13 @@ namespace seed11
 	// hardcoded_sequence_generator
 	// seeded<gen>()
 
+	class seed_device_init_error : public std::runtime_error
+	{
+	public:
+		explicit seed_device_init_error(const std::string& what_arg);
+		explicit seed_device_init_error(const char* what_arg);
+	};
+
 	class seed_device
 	{
 		struct seed_impl_deleter

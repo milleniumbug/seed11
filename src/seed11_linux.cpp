@@ -13,6 +13,17 @@ namespace seed11
 		}
 	}
 
+	seed_device_init_error::seed_device_init_error(const std::string& what_arg) :
+		std::runtime_error(what_arg)
+	{
+
+	}
+	seed_device_init_error::seed_device_init_error(const char* what_arg) :
+		std::runtime_error(what_arg)
+	{
+
+	}
+
 	void seed_device::seed_impl_deleter::operator()(void* ptr)
 	{
 		std::fclose(static_cast<FILE*>(ptr));
@@ -27,7 +38,8 @@ namespace seed11
 	seed_device::seed_device(const std::string& token) :
 		impl(detail::seed_device_init(token))
 	{
-
+		if(!impl)
+			throw seed_device_init_error("FUCK");
 	}
 
 	seed_device::result_type seed_device::operator()()
