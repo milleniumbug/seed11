@@ -7,6 +7,7 @@
 #include <array>
 #include <cstddef>
 #include <random>
+#include <stdexcept>
 #include <type_traits>
 #include <algorithm>
 
@@ -123,9 +124,22 @@ namespace seed11
 	template<typename RandomAccessIterator>
 	void shuffle(RandomAccessIterator first, RandomAccessIterator last)
 	{
-		shuffle(first, last, thread_local_random());
+		shuffle(first, last, detail::thread_local_random());
 	}
 
+	template<typename RandomAccessIterator, typename URNG>
+	RandomAccessIterator choice(RandomAccessIterator first, RandomAccessIterator last, URNG&& urng)
+	{
+		typedef typename std::iterator_traits<RandomAccessIterator>::difference_type df_t;
+		std::uniform_int_distribution<df_t> dist(0, std::max(static_cast<df_t>(0), std::distance(first, last-1)));
+		return first + dist(urng);
+	}
+
+	template<typename RandomAccessIterator>
+	RandomAccessIterator choice(RandomAccessIterator first, RandomAccessIterator last)
+	{
+		return choice(first, last, detail::thread_local_random());
+	}
 }
 
 #endif
