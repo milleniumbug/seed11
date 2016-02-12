@@ -7,21 +7,10 @@ namespace seed11
 {
 	namespace detail
 	{
-		void* seed_device_init(const std::string& token)
+		void* seed_device_init(const std::string&)
 		{
 			return std::fopen("/dev/urandom", "rb");
 		}
-	}
-
-	seed_device_init_error::seed_device_init_error(const std::string& what_arg) :
-		std::runtime_error(what_arg)
-	{
-
-	}
-	seed_device_init_error::seed_device_init_error(const char* what_arg) :
-		std::runtime_error(what_arg)
-	{
-
 	}
 
 	void seed_device::seed_impl_deleter::operator()(void* ptr)
@@ -48,10 +37,5 @@ namespace seed11
 		std::size_t count_read = fread(&res, sizeof res, 1, static_cast<FILE*>(impl.get()));
 		assert(count_read == 1);
 		return res;
-	}
-
-	double seed_device::entropy() const
-	{
-		return 42;
 	}
 }

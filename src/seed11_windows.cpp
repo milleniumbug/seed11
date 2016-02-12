@@ -36,21 +36,10 @@ namespace seed11
 			}
 		};
 
-		void* seed_device_init(const std::string& token)
+		void* seed_device_init(const std::string&)
 		{
 			return new detail::seed_impl();
 		}
-	}
-
-	seed_device_init_error::seed_device_init_error(const std::string& what_arg) :
-		std::runtime_error(what_arg)
-	{
-
-	}
-	seed_device_init_error::seed_device_init_error(const char* what_arg) :
-		std::runtime_error(what_arg)
-	{
-
 	}
 
 	void seed_device::seed_impl_deleter::operator()(void* ptr)
@@ -77,10 +66,5 @@ namespace seed11
 		if(!CryptGenRandom(i.crypt_provider, sizeof res, reinterpret_cast<BYTE*>(&res)))
 			assert(false);
 		return res;
-	}
-
-	double seed_device::entropy() const
-	{
-		return 42;
 	}
 }
