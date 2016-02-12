@@ -1,13 +1,14 @@
 #include <climits>
 #include <memory>
 #include <string>
+#include <array>
+#include <cstddef>
+#include <random>
+#include <type_traits>
+#include <algorithm>
 
 namespace seed11
 {
-
-	// hardcoded_sequence_generator
-	// seeded<gen>()
-
 	class seed_device_init_error : public std::runtime_error
 	{
 	public:
@@ -48,4 +49,71 @@ namespace seed11
 		~seed_device() = default;
 	};
 
+	template<typename T>
+	struct seed_size
+	{
+		static const std::size_t value = 1 + sizeof(T)/sizeof(seed_device::result_type);
+	};
+
+	template<class UIntType,
+		size_t w, size_t n, size_t m, size_t r,
+		UIntType a, size_t u, UIntType d, size_t s,
+		UIntType b, size_t t,
+		UIntType c, size_t l, UIntType f>
+	struct seed_size<std::mersenne_twister_engine<UIntType, w, n, m, r, a, u, d, s, b, t, c, l, f>>
+	{
+		static const std::size_t value = std::mersenne_twister_engine<UIntType, w, n, m, r, a, u, d, s, b, t, c, l, f>::state_size;
+	};
+
+	template<class UIntType,
+		UIntType a,
+		UIntType c,
+		UIntType m>
+	struct seed_size<std::linear_congruential_engine<UIntType, a, c, m>>
+	{
+		static const std::size_t value = sizeof(UIntType)/sizeof(seed_device::result_type);
+	};
+
+	template<class UIntType,
+		std::size_t w,
+		std::size_t s,
+		std::size_t r>
+	struct seed_size<std::subtract_with_carry_engine<UIntType, w, s, r>>
+	{
+		static const std::size_t value = sizeof(UIntType)/sizeof(seed_device::result_type)*r;
+	};
+
+	template<typename T, typename U>
+	T make_seeded(U&& urng)
+	{
+		typedef typename std::remove_cv<typename std::remove_reference<U>::type>::type UnqualifiedU;
+		std::array<typename UnqualifiedU::result_type, seed_size<T>::value> seed;
+		std::generate(seed.begin(), seed.end(), std::ref(urng));
+		std::seed_seq seed_sequence(seed.begin(), seed.end());
+		return T(seed_sequence);
+	}
+
+	namespace detail
+	{
+		inline seed_device& thread_local_seed_device()
+		{
+			thread_local seed_device s;
+			return s;
+		}
+	}
+
+	template<typename T>
+	T make_seeded()
+	{
+		return make_seeded<T>(detail::thread_local_seed_device());
+	}
+
+	namespace detail
+	{
+		inline std::mt19937_64& thread_local_random()
+		{
+			thread_local auto local_random = make_seeded<std::mt19937_64>();
+			return local_random;
+		}
+	}
 }
