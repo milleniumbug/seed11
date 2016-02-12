@@ -1,3 +1,6 @@
+#ifndef SEED11_HPP_E3A87608D1BE11E5A14C96B0531BF5E9
+#define SEED11_HPP_E3A87608D1BE11E5A14C96B0531BF5E9
+
 #include <climits>
 #include <memory>
 #include <string>
@@ -116,4 +119,13 @@ namespace seed11
 			return local_random;
 		}
 	}
+
+	template<typename RandomAccessIterator>
+	void shuffle(RandomAccessIterator first, RandomAccessIterator last)
+	{
+		shuffle(first, last, thread_local_random());
+	}
+
 }
+
+#endif
