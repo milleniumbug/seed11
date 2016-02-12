@@ -64,7 +64,7 @@ namespace seed11
 		detail::seed_impl& i = *static_cast<detail::seed_impl*>(impl.get());
 		result_type res;
 		if(!CryptGenRandom(i.crypt_provider, sizeof res, reinterpret_cast<BYTE*>(&res)))
-			assert(false);
+			throw seed_device_read_error("FUCK");
 		return res;
 	}
 }

@@ -15,6 +15,17 @@ namespace seed11
 
 	}
 
+	seed_device_read_error::seed_device_read_error(const std::string& what_arg) :
+		std::runtime_error(what_arg)
+	{
+
+	}
+	seed_device_read_error::seed_device_read_error(const char* what_arg) :
+		std::runtime_error(what_arg)
+	{
+
+	}
+
 	double seed_device::entropy() const
 	{
 		return 42;
