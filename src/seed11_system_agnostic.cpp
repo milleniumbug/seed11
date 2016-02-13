@@ -1,5 +1,6 @@
 #include <seed11/seed11.hpp>
 #include <cstddef>
+#include <limits>
 #include <stdexcept>
 
 namespace seed11
@@ -28,6 +29,6 @@ namespace seed11
 
 	double seed_device::entropy() const
 	{
-		return 42;
+		return std::numeric_limits<seed_device::result_type>::digits;
 	}
 }
