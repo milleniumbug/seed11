@@ -1,9 +1,13 @@
 cmake_minimum_required(VERSION 3.3)
 project(seed11)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
+if(MSVC)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
+endif()
 
-set(CXX_EXTENSIONS FALSE)
+set(CMAKE_CXX_EXTENSIONS OFF)
 set(SOURCE_FILES
 	src/seed11_system_agnostic.cpp)
 
@@ -18,3 +22,13 @@ include_directories(include)
 add_library(seed11 ${SOURCE_FILES})
 target_compile_features(seed11 INTERFACE cxx_deleted_functions cxx_rvalue_references cxx_defaulted_functions cxx_right_angle_brackets cxx_thread_local)
 target_compile_features(seed11 PRIVATE cxx_deleted_functions cxx_rvalue_references cxx_defaulted_functions cxx_right_angle_brackets cxx_thread_local)
+
+file(GLOB EXAMPLE_FILES "examples/*.cpp")
+file(GLOB TEST_FILES "tests/*.cpp")
+
+foreach(sample ${EXAMPLE_FILES} ${TEST_FILES})
+	get_filename_component(sample_we ${sample} NAME_WE)
+	add_executable(${sample_we} ${sample})
+	set_property(TARGET ${sample_we} PROPERTY CXX_STANDARD 11)
+	target_link_libraries(${sample_we} seed11)
+endforeach(sample)
