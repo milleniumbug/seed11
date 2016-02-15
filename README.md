@@ -1,5 +1,3 @@
-**DISCLAIMER**: I make no guarantees with regard to suitability of this library for cryptographic purposes. (well, tbh, if you're doing crypto, you should know better than to snoop on random GitHub projects)
-
 seed11 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 ======
 
