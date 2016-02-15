@@ -106,11 +106,8 @@ namespace seed11
 
 	namespace detail
 	{
-		inline seed_device& thread_local_seed_device()
-		{
-			thread_local seed_device s;
-			return s;
-		}
+		seed_device& thread_local_seed_device();
+		std::mt19937_64& thread_local_random();
 	}
 
 	template<typename T>
@@ -119,19 +116,19 @@ namespace seed11
 		return make_seeded<T>(detail::thread_local_seed_device());
 	}
 
-	namespace detail
+	void reseed();
+	void reseed(std::mt19937_64::result_type value);
+
+	template<typename T>
+	T randint(T a, T b)
 	{
-		inline std::mt19937_64& thread_local_random()
-		{
-			thread_local auto local_random = make_seeded<std::mt19937_64>();
-			return local_random;
-		}
+		return std::uniform_int_distribution<T>(a,b)(detail::thread_local_random());
 	}
 
 	template<typename RandomAccessIterator>
 	void shuffle(RandomAccessIterator first, RandomAccessIterator last)
 	{
-		shuffle(first, last, detail::thread_local_random());
+		std::shuffle(first, last, detail::thread_local_random());
 	}
 
 	template<typename RandomAccessIterator, typename URNG>

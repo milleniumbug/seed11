@@ -31,4 +31,29 @@ namespace seed11
 	{
 		return std::numeric_limits<seed_device::result_type>::digits;
 	}
+
+	void reseed()
+	{
+		detail::thread_local_random() = make_seeded<std::mt19937_64>();
+	}
+
+	void reseed(std::mt19937_64::result_type value)
+	{
+		detail::thread_local_random().seed(value);
+	}
+
+	namespace detail
+	{
+		seed_device& thread_local_seed_device()
+		{
+			thread_local seed_device s;
+			return s;
+		}
+
+		std::mt19937_64& thread_local_random()
+		{
+			thread_local auto local_random = make_seeded<std::mt19937_64>();
+			return local_random;
+		}
+	}
 }
