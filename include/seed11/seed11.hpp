@@ -2,6 +2,7 @@
 #define SEED11_HPP_E3A87608D1BE11E5A14C96B0531BF5E9
 
 #include <climits>
+#include <limits>
 #include <memory>
 #include <string>
 #include <array>
