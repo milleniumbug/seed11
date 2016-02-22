@@ -9,7 +9,8 @@ endif()
 
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(SOURCE_FILES
-	src/seed11_system_agnostic.cpp)
+	src/seed11_system_agnostic.cpp
+	src/deterministic_unsafe_seed_device.cpp)
 
 if(${WIN32})
 	set(SOURCE_FILES ${SOURCE_FILES} src/seed11_windows.cpp)
