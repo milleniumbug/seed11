@@ -1,3 +1,4 @@
+#include <seed11/seed_device.hpp>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -5,7 +6,6 @@
 #include <random>
 #include <stdexcept>
 #include <functional>
-#include <seed11/seed11.hpp>
 
 template<typename T, typename Function>
 void print_gen(

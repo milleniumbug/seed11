@@ -1,6 +1,9 @@
 #ifndef SEED_DEVICE_HPP_D399E636D90F11E59E05DDD3531BF5E9
 #define SEED_DEVICE_HPP_D399E636D90F11E59E05DDD3531BF5E9
 
+#include <climits>
+#include <memory>
+
 namespace seed11
 {
 	class seed_device_init_error : public std::runtime_error
