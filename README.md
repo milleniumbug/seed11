@@ -4,7 +4,7 @@ seed11 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)
 Motivation
 ----------
 
-```
+```c++
 $ cat tests/motivation.cpp
 #include <iostream>
 #include <iterator>
