@@ -1,3 +1,5 @@
+#ifdef _WIN32
+
 #include <seed11/seed11.hpp>
 #include <cstddef>
 #include <cassert>
@@ -47,10 +49,10 @@ namespace seed11
 		delete static_cast<detail::seed_impl*>(ptr);
 	}
 
-	seed_device::seed_device() : 
+	seed_device::seed_device() :
 		impl(detail::seed_device_init(""))
 	{
-		
+
 	}
 
 	seed_device::seed_device(const std::string& token) :
@@ -68,3 +70,5 @@ namespace seed11
 		return res;
 	}
 }
+
+#endif  // _WIN32
