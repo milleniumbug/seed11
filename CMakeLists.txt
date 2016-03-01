@@ -20,7 +20,7 @@ endif(${WIN32})
 
 include_directories(include)
 
-add_library(seed11 ${SOURCE_FILES})
+add_library(seed11 STATIC ${SOURCE_FILES})
 target_compile_features(seed11 PUBLIC cxx_deleted_functions cxx_rvalue_references cxx_defaulted_functions cxx_right_angle_brackets cxx_thread_local cxx_constexpr)
 target_compile_features(seed11 PRIVATE cxx_thread_local)
 
