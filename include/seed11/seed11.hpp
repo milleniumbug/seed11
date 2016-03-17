@@ -1,11 +1,14 @@
 #ifndef SEED11_HPP_E3A87608D1BE11E5A14C96B0531BF5E9
 #define SEED11_HPP_E3A87608D1BE11E5A14C96B0531BF5E9
 
+#include <cassert>
 #include <climits>
 #include <limits>
+#include <initializer_list>
 #include <memory>
 #include <string>
-#include <array>
+#include <iterator>
+#include <vector>
 #include <cstddef>
 #include <random>
 #include <stdexcept>
@@ -16,48 +19,159 @@
 
 namespace seed11
 {
-	template<typename T>
-	struct seed_size
+	namespace detail
 	{
-		static const std::size_t value = 1 + sizeof(T)/sizeof(seed_device::result_type);
-	};
+		template<typename T>
+		class acquire_seed_size_seed_seq
+		{
+			std::size_t* s;
 
-	template<class UIntType,
-		size_t w, size_t n, size_t m, size_t r,
-		UIntType a, size_t u, UIntType d, size_t s,
-		UIntType b, size_t t,
-		UIntType c, size_t l, UIntType f>
-	struct seed_size<std::mersenne_twister_engine<UIntType, w, n, m, r, a, u, d, s, b, t, c, l, f>>
-	{
-		static const std::size_t value = std::mersenne_twister_engine<UIntType, w, n, m, r, a, u, d, s, b, t, c, l, f>::state_size;
-	};
+		public:
+			typedef T result_type;
 
-	template<class UIntType,
-		UIntType a,
-		UIntType c,
-		UIntType m>
-	struct seed_size<std::linear_congruential_engine<UIntType, a, c, m>>
-	{
-		static const std::size_t value = sizeof(UIntType)/sizeof(seed_device::result_type);
-	};
+			acquire_seed_size_seed_seq(std::size_t* s = nullptr) :
+				s(s)
+			{
 
-	template<class UIntType,
-		std::size_t w,
-		std::size_t s,
-		std::size_t r>
-	struct seed_size<std::subtract_with_carry_engine<UIntType, w, s, r>>
+			}
+
+			template<typename InputIterator>
+			acquire_seed_size_seed_seq(InputIterator b, InputIterator e) :
+				s(nullptr)
+			{
+
+			}
+
+			template<typename V>
+			acquire_seed_size_seed_seq(std::initializer_list<V> in) :
+				s(nullptr)
+			{
+
+			}
+
+			template<typename RandomAccessIterator>
+			void generate(RandomAccessIterator outb, RandomAccessIterator oute)
+			{
+				if(s) *s = std::distance(outb, oute);
+				std::fill(outb, oute, 0);
+			}
+
+			std::size_t size() const
+			{
+				return 0;
+			}
+
+			template<typename OutputIterator>
+			void param(OutputIterator out)
+			{
+				
+			}
+		};
+
+		template<typename T>
+		std::size_t get_seed_size_for()
+		{
+			std::size_t seed_size;
+			acquire_seed_size_seed_seq<unsigned> acq_seed_size(&seed_size);
+			T gen(acq_seed_size);
+			return seed_size;
+		}
+	}
+
+	template<typename SequenceContainer>
+	class seed_seq_container_adapter
 	{
-		static const std::size_t value = sizeof(UIntType)/sizeof(seed_device::result_type)*r;
+		SequenceContainer seed;
+
+		void ensure_not_empty()
+		{
+			if(seed.empty())
+			{
+				seed.push_back(1);
+				seed.push_back(2);
+			}
+		}
+
+	public:
+		typedef unsigned result_type;
+
+		seed_seq_container_adapter()
+		{
+			ensure_not_empty();
+		}
+
+		template<typename InputIterator>
+		seed_seq_container_adapter(InputIterator b, InputIterator e) :
+			seed(b, e)
+		{
+			ensure_not_empty();
+		}
+
+		template<typename V>
+		seed_seq_container_adapter(std::initializer_list<V> in) :
+			seed(in.begin(), in.end())
+		{
+			ensure_not_empty();
+		}
+
+		seed_seq_container_adapter(const SequenceContainer& s) :
+			seed(s)
+		{
+			ensure_not_empty();
+		}
+
+		seed_seq_container_adapter(SequenceContainer&& s) :
+			seed(std::move(s))
+		{
+			ensure_not_empty();
+		}
+
+		template<typename RandomAccessIterator>
+		void generate(RandomAccessIterator outb, RandomAccessIterator oute)
+		{
+			auto in = seed.begin();
+			auto inb = seed.begin();
+			auto ine = seed.end();
+			for(auto& o = outb; o != oute; ++o)
+			{
+				*o = *in;
+				++in;
+				if(in == ine)
+					in = inb;
+			}
+		}
+
+		std::size_t size() const
+		{
+			return seed.size();
+		}
+
+		template<typename OutputIterator>
+		void param(OutputIterator out)
+		{
+			std::copy(seed.begin(), seed.end(), out);
+		}
+
+		SequenceContainer steal_storage()
+		{
+			return SequenceContainer(std::move(seed));
+		}
 	};
 
 	template<typename T, typename U>
 	T make_seeded(U&& urng)
 	{
 		typedef typename std::remove_cv<typename std::remove_reference<U>::type>::type UnqualifiedU;
-		std::array<typename UnqualifiedU::result_type, seed_size<T>::value> seed;
-		std::generate(seed.begin(), seed.end(), std::ref(urng));
-		std::seed_seq seed_sequence(seed.begin(), seed.end());
-		return T(seed_sequence);
+		// get the size of the seed from the URNG by employing
+		// a dummy SeedSequence object.
+		const std::size_t seed_size = detail::get_seed_size_for<T>();
+		// fill the vector with random data
+		std::vector<typename UnqualifiedU::result_type> seed_data;
+		seed_data.reserve(seed_size);
+		std::generate_n(std::back_inserter(seed_data), seed_size, std::ref(urng));
+		// use it to initialize a seed sequence
+		seed_seq_container_adapter<decltype(seed_data)> true_seed_seq(std::move(seed_data));
+		return T(true_seed_seq);
 	}
 
 	namespace detail
