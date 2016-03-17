@@ -158,6 +158,7 @@ namespace seed11
 		}
 	};
 
+	/// create seeded random engine using the generator passed as an argument
 	template<typename T, typename U>
 	T make_seeded(U&& urng)
 	{
@@ -180,6 +181,7 @@ namespace seed11
 		std::mt19937_64& thread_local_random();
 	}
 
+	/// create seeded random engine
 	template<typename T>
 	T make_seeded()
 	{
