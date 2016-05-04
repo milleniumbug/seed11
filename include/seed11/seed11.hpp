@@ -36,14 +36,14 @@ namespace seed11
 			}
 
 			template<typename InputIterator>
-			acquire_seed_size_seed_seq(InputIterator b, InputIterator e) :
+			acquire_seed_size_seed_seq(InputIterator, InputIterator) :
 				s(nullptr)
 			{
 
 			}
 
 			template<typename V>
-			acquire_seed_size_seed_seq(std::initializer_list<V> in) :
+			acquire_seed_size_seed_seq(std::initializer_list<V>) :
 				s(nullptr)
 			{
 
@@ -62,9 +62,9 @@ namespace seed11
 			}
 
 			template<typename OutputIterator>
-			void param(OutputIterator out)
+			void param(OutputIterator)
 			{
-				
+
 			}
 		};
 
