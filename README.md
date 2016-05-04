@@ -1,5 +1,4 @@
-seed11 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
-[![CI](https://travis-ci.org/milleniumbug/seed11.svg?branch=master)](https://travis-ci.org/milleniumbug/seed11)
+seed11 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)[![CI](https://travis-ci.org/milleniumbug/seed11.svg?branch=master)](https://travis-ci.org/milleniumbug/seed11)
 ======
 
 Motivation
