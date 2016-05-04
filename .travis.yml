@@ -6,4 +6,4 @@ addons:
  apt:
    packages:
    - ninja
-script: cmake -G Ninja && ninja
+script: cmake --version && cmake -G Ninja && ninja
