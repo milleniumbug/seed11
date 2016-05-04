@@ -3,26 +3,23 @@
 #include <cstdio>
 #include <cassert>
 
-#ifndef _GNU_SOURCE
-#define _GNU_SOURCE
-#endif
-#include <unistd.h>
-#include <sys/syscall.h>
-#include <linux/random.h>
-
 namespace seed11
 {
 	namespace detail
 	{
 		void* seed_device_init(const std::string&)
 		{
-			return nullptr;
+			FILE* f = std::fopen("/dev/urandom", "rb");
+			if(!f)
+				throw seed_device_init_error("FUCK");
+			else
+				return f;
 		}
 	}
 
-	void seed_device::seed_impl_deleter::operator()(void*)
+	void seed_device::seed_impl_deleter::operator()(void* ptr)
 	{
-		
+		std::fclose(static_cast<FILE*>(ptr));
 	}
 
 	seed_device::seed_device() :
@@ -40,11 +37,8 @@ namespace seed11
 	seed_device::result_type seed_device::operator()()
 	{
 		result_type res;
-		void* buf = &res;
-		std::size_t buflen = sizeof res;
-		unsigned int flags = 0;
-		int count_read = syscall(SYS_getrandom, buf, buflen, flags);
-		if(count_read != static_cast<int>(buflen))
+		std::size_t count_read = fread(&res, sizeof res, 1, static_cast<FILE*>(impl.get()));
+		if(count_read < 1)
 			throw seed_device_read_error("FUCK");
 		return res;
 	}

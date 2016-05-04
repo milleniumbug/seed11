@@ -15,7 +15,7 @@ set(SOURCE_FILES
 if(${WIN32})
 	set(SOURCE_FILES ${SOURCE_FILES} src/seed11_windows.cpp)
 else(${WIN32})
-	set(SOURCE_FILES ${SOURCE_FILES} src/seed11_linux.cpp)
+	set(SOURCE_FILES ${SOURCE_FILES} src/seed11_unix.cpp)
 endif(${WIN32})
 
 include_directories(include)
