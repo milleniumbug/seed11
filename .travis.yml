@@ -1,0 +1,9 @@
+language: cpp
+compiler:
+  - clang
+  - gcc
+addons:
+ apt:
+   packages:
+   - ninja
+script: cmake -G Ninja && ninja
