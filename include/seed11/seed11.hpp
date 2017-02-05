@@ -207,7 +207,7 @@ namespace seed11
 	RandomAccessIterator choice(RandomAccessIterator first, RandomAccessIterator last, URNG&& urng)
 	{
 		typedef typename std::iterator_traits<RandomAccessIterator>::difference_type df_t;
-		std::uniform_int_distribution<df_t> dist(0, std::max(static_cast<df_t>(0), std::distance(first, last-1)));
+		std::uniform_int_distribution<df_t> dist(0, std::max(static_cast<df_t>(0), std::distance(first, last)-1));
 		return first + dist(urng);
 	}
 
