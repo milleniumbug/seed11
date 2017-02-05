@@ -2,6 +2,7 @@
 #define DETERMINISTIC_UNSAFE_SEED_DEVICE_HPP_9AB11E38D8E811E5A83BC0A2531BF5E9
 
 #include <memory>
+#include <string>
 #include <climits>
 
 namespace seed11

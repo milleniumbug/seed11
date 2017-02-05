@@ -3,6 +3,8 @@
 
 #include <climits>
 #include <memory>
+#include <string>
+#include <stdexcept>
 
 namespace seed11
 {
