@@ -11,9 +11,10 @@ namespace seed11
 		{
 			FILE* f = std::fopen("/dev/urandom", "rb");
 			if(!f)
-				throw seed_device_init_error("FUCK");
-			else
-				return f;
+				throw seed_device_init_error("");
+			
+			std::setbuf(f, nullptr);
+			return f;
 		}
 	}
 
